@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id            String        @id @default(cuid())
+  name          String
+  type          String        // "expense" | "income" | "both"
+  color         String        @default("#22c55e")
+  icon          String        @default("tag")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  transactions  Transaction[]
+  fixedExpenses FixedExpense[]
+  budgets       Budget[]
+}
+
+model Transaction {
+  id             String            @id @default(cuid())
+  description    String
+  amount         Float
+  type           String            // "payable" | "receivable"
+  status         String            @default("pending") // "pending" | "paid" | "received" | "overdue"
+  dueDate        DateTime
+  paidAt         DateTime?
+  categoryId     String?
+  category       Category?         @relation(fields: [categoryId], references: [id])
+  notes          String?
+  isFixed        Boolean           @default(false)
+  fixedExpenseId String?
+  fixedExpense   FixedExpense?     @relation(fields: [fixedExpenseId], references: [id])
+  importId       String?
+  import         CreditCardImport? @relation(fields: [importId], references: [id])
+  creditCardId        String?
+  creditCard          CreditCard?       @relation(fields: [creditCardId], references: [id])
+  installmentCurrent  Int?              // parcela atual (ex: 3)
+  installmentTotal    Int?              // total de parcelas (ex: 12)
+  installmentGroupId  String?           // agrupa todas as parcelas do mesmo parcelamento
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+model CreditCard {
+  id           String        @id @default(cuid())
+  name         String
+  lastFour     String?
+  dueDay       Int           // dia de vencimento da fatura
+  closingDay   Int           // dia de fechamento da fatura
+  limit        Float?
+  color        String        @default("#8b5cf6")
+  isActive     Boolean       @default(true)
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model FixedExpense {
+  id           String        @id @default(cuid())
+  description  String
+  amount       Float
+  type         String        // "payable" | "receivable"
+  dayOfMonth   Int
+  categoryId   String?
+  category     Category?     @relation(fields: [categoryId], references: [id])
+  isActive     Boolean       @default(true)
+  notes        String?
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Budget {
+  id         String   @id @default(cuid())
+  categoryId String   @unique
+  category   Category @relation(fields: [categoryId], references: [id])
+  amount     Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CreditCardImport {
+  id            String        @id @default(cuid())
+  filename      String
+  month         Int
+  year          Int
+  status        String        @default("processing") // "pending_review" | "completed"
+  extractedData String?       // JSON dos lançamentos extraídos antes da confirmação
+  transactions  Transaction[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}

@@ -8,8 +8,10 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-    volumes:
-      - ./data:/app/data
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - JWT_SECRET=${JWT_SECRET}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
