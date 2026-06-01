@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: SEU_USUARIO/financeiropessoal:latest
+    image: primojuniordocker/financeiropessoal:latest
     container_name: financeiropessoal
     ports:
       - "3000:3000"
