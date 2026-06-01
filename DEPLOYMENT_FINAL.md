@@ -8,6 +8,10 @@
 
 ## Próximos Passos para Deploy
 
+**Se está usando EasyPanel** (interface web da VPS), veja: [EASYPANEL_SETUP.md](EASYPANEL_SETUP.md)
+
+**Se está usando Docker Compose via CLI:**
+
 ### 1. Atualizar .env na VPS
 
 SSH na sua VPS e atualize o arquivo `.env`:
