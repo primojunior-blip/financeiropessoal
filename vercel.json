@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/telegram/notify?type=today",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/telegram/notify?type=week",
+      "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/telegram/notify?type=month",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}
